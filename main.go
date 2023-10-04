@@ -1,27 +1,20 @@
 package main
 
 import (
-	"fmt"
 	"dpay/transaction"
+	"dpay/handlers"
+
+	"github.com/gin-gonic/gin"
 )
 
-
-
 func main() {
-	client := transaction.CreateClient()
-	client.InitializeBank()
+	client := transaction.TransactionClient
 	defer client.Close()
 
-	//fmt.Printf("Bank id = %v\n", transaction.BANK_ID)
-	id := transaction.IdFromHex("abcdef")
-	id2 := transaction.IdFromHex("fedcba")
-	//fmt.Printf("Creating account %v...", id)
-	client.CreateWithBalance(id, 4000)
-	client.CreateWithBalance(id2, 4000)
+	router := gin.Default()
+	router.GET("/balance/:id", handlers.GetBalance)
+	router.POST("/transfer", handlers.Transfer)
+	router.POST("/create", handlers.CreateWithBalance)
 
-	client.Transfer(id, id2, 2000)
-
-	fmt.Printf("Balance of %v = %v\n", id, client.GetBalance(id))
-	fmt.Printf("Balance of %v = %v\n", id2, client.GetBalance(id2))
-	fmt.Println("Success.")
+	router.Run("localhost:8080")
 }

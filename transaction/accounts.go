@@ -166,7 +166,7 @@ func (c *Client) Transfer(from AccountId, to AccountId, amount uint64) {
 	log.Println("Transfer: Transfer successful.")
 }
 
-func (c *Client) CreateWithBalance(id AccountId, amount int) {
+func (c *Client) CreateWithBalance(id AccountId, amount uint64) {
 	account := tb_types.Account{
 			ID:         id.id,
 			UserData:   tb_types.Uint128{},
