@@ -26,6 +26,14 @@ const (
 	// given in the docs.
 	DEFAULT_CODE = 718
 
+	// Batch size for executing queries to the DB
+	BATCH_SIZE = 1024
+
+	// If a batch hasn't been processed in the last
+	// BATCH_TICK_INTERVAL ms, process the current
+	// batch anyway even if it is not BATCH_SIZE
+	BATCH_TICK_INTERVAL = 75
+
 )
 // When creating accounts, we use the `debits_must_not_exceed_credits`
 // flag. This means that the account can't pay more than its balance.
