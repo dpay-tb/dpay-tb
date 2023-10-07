@@ -58,3 +58,22 @@ func CreateWithBalance(c *gin.Context) {
 
 	c.JSON(http.StatusOK, gin.H{"status": "success"})
 }
+
+func Transfer2(c *gin.Context) {
+	var req transaction.TransferRequest
+	if err := c.BindJSON(&req); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	resp := make(chan transaction.TransferResponse)
+	transaction.TransferRequests <- transaction.TransferQuery{Request: req, Response: resp}
+	res := <-resp
+
+	if res.Err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": res.Err.Error()})
+	} else {
+		c.JSON(http.StatusOK, gin.H{"status": "success"})
+
+	}
+}

@@ -81,7 +81,8 @@ func DispatchTransers(batch []TransferQuery) {
 func TransferWorker() {
 	var batch []TransferQuery
     var batchSize int
-    ticker := time.NewTicker(BATCH_TICK_INTERVAL)
+
+    ticker := time.NewTicker(BATCH_TICK_INTERVAL * time.Millisecond)
     for {
         select {
         case req := <-TransferRequests:
@@ -92,6 +93,8 @@ func TransferWorker() {
                 batchSize = 0
                 batch = nil
             }
+			ticker.Reset(BATCH_TICK_INTERVAL * time.Millisecond)
+			
         case <-ticker.C:
             if batchSize > 0 {
                 DispatchTransers(batch)

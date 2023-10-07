@@ -3,6 +3,7 @@ package transaction
 import (
 	"os"
 	"log"
+	"encoding/json"
 	tb "github.com/tigerbeetle/tigerbeetle-go"
 	tb_types "github.com/tigerbeetle/tigerbeetle-go/pkg/types"
 	"github.com/google/uuid"
@@ -32,7 +33,7 @@ const (
 	// If a batch hasn't been processed in the last
 	// BATCH_TICK_INTERVAL ms, process the current
 	// batch anyway even if it is not BATCH_SIZE
-	BATCH_TICK_INTERVAL = 75
+	BATCH_TICK_INTERVAL = 30
 
 )
 // When creating accounts, we use the `debits_must_not_exceed_credits`
@@ -50,6 +51,19 @@ type Client struct {
 
 type AccountId struct {
 	id tb_types.Uint128
+}
+
+func (a *AccountId) UnmarshalJSON(data []byte) error {
+    // Unmarshal the JSON data into a string
+    var id string
+    if err := json.Unmarshal(data, &id); err != nil {
+        return err
+    }
+
+    // Convert the string to AccountId using IdFromHex
+    *a = IdFromHex(id)
+
+    return nil
 }
 
 func IdFromHex(id string) AccountId {
